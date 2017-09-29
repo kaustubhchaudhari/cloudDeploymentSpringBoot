@@ -1,3 +1,6 @@
+<<<<<<< HEAD
+# csye6225-fall2017
+=======
 # Make Unauthenticated HTTP Request
 
 Execute following command on your bash shell
@@ -23,3 +26,4 @@ where *user* is the username and *password* is the password.
  ```
  {"message":"you are logged in. current time is Tue Sep 19 20:03:49 EDT 2017"}
  ```
+>>>>>>> f1396efabe8377a49e301c02e3ef12c532f0c4c1
