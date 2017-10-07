@@ -10,15 +10,9 @@ Akshay Nakhawa : nakhawa.a@husky.neu.edu
 Kaustubh Chaudhari : chaudhari.k@husky.neu.edu 
 Prachi Saxena : saxena.pr@husky.neu.edu
 
-PREREQS FOR LOCAL DEPLOYMENT
-IDE for maven and gradle support
-Mysql Database
-
-PREREQS FOR WEB DEPLOYMENT
-Travis
-Postman
-Tomcat Server
-Github
-
-TRAVIS CI BUILD
-https://travis-ci.com/prachiajm/csye6225-fall2017
+Instructions to run
+Move to the directory and execute the following commands
+  - ./create-csye6225-cloudformation-stack.sh
+  - ./delete-csye6225-cloudformation-stack.sh
+  - ./launch-ec2-instance.sh
+  - ./terminate-ec2-instance.sh
