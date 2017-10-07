@@ -12,7 +12,9 @@ Prachi Saxena : saxena.pr@husky.neu.edu
 
 Instructions to run
 Move to the directory and execute the following commands
-  - ./create-csye6225-cloudformation-stack.sh
-  - ./delete-csye6225-cloudformation-stack.sh
-  - ./launch-ec2-instance.sh
-  - ./terminate-ec2-instance.sh
+  - CLOUD FORMATION
+    - ./create-csye6225-cloudformation-stack.sh
+    - ./delete-csye6225-cloudformation-stack.sh
+  - SCRIPTS
+    - ./launch-ec2-instance.sh
+    - ./terminate-ec2-instance.sh
