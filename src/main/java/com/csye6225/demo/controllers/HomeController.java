@@ -67,8 +67,8 @@ public class HomeController {
     return jsonObject.toString();
   }
 
-  @RequestMapping(path="/user/register", method = RequestMethod.POST, produces = "application/json") // Map ONLY GET Requests
-  public @ResponseBody String addNewUser (@RequestBody Person person) {
+  @RequestMapping(path="/user/register", method = RequestMethod.POST, produces = "application/json" , consumes= {"application/json","application/x-www-form-urlencoded"}) // Map ONLY GET Requests
+  public @ResponseBody String addNewUser (Person person) {
     // @ResponseBody means the returned String is the response, not a view name
     // @RequestParam means it is a parameter from the GET or POST request
     List<Person> personList = userRepository.findByEmail(person.getEmail());
