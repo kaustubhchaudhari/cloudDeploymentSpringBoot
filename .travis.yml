@@ -1,0 +1,18 @@
+language: java
+jdk:
+  - oraclejdk8
+
+sudo: false
+install: true
+
+script:
+  - ./gradlew war
+notifications:
+  email:
+    recipients:
+      - kunche.a@husky.neu.edu
+      - nakhawa.a@husky.neu.edu
+      - chaudhari.k@husky.neu.edu
+      - saxena.pr@husky.neu.edu
+
+  services: mysql
