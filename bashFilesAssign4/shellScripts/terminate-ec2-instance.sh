@@ -1,5 +1,5 @@
 #!/bin/bash
-instanceId=i-099b248f2d7dc727f
+instanceId=i-088532020864c38f8
 export securityGroupId=$(aws ec2 describe-instance-attribute --instance-id $instanceId --attribute groupSet --query "Groups[0].GroupId" --output text)
 aws ec2 modify-instance-attribute --instance-id $instanceId --no-disable-api-termination
 sleep 10s
