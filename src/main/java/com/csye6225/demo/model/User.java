@@ -4,27 +4,33 @@ Kaustubh Chaudhari, 001218494, chaudhari.k@husky.neu.edu
 Prachi Saxena, 001220709, saxena.pr@husky.neu.edu
 */
 
-package com.csye6225.demo.controllers;
+package com.csye6225.demo.model;
+
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 @Entity
-public class Person {
+public class User {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    private Integer id;
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(
+            name ="uuid",
+            strategy = "uuid2"
+    )
+    private String id;
 
     private String pass;
 
     private String email;
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
