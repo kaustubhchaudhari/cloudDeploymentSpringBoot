@@ -8,7 +8,7 @@ Prachi Saxena, 001220709, saxena.pr@husky.neu.edu
 package com.csye6225.demo.controllers;
 
 
-import com.csye6225.demo.auth.BCryptPasswordEncoderBean;
+import com.csye6225.demo.repositories.UserRepository;
 import com.google.gson.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,10 +19,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.Date;
-import java.util.List;
 
-import com.csye6225.demo.controllers.Person;
-import com.csye6225.demo.controllers.UserRepository;
+import com.csye6225.demo.model.User;
 
 @Controller
 public class HomeController {
@@ -68,17 +66,17 @@ public class HomeController {
   }
 
   @RequestMapping(path="/user/register", method = RequestMethod.POST, produces = "application/json" , consumes= {"application/json","application/x-www-form-urlencoded"}) // Map ONLY GET Requests
-  public @ResponseBody String addNewUser (Person person) {
+  public @ResponseBody String addNewUser (@RequestBody User person) {
     // @ResponseBody means the returned String is the response, not a view name
     // @RequestParam means it is a parameter from the GET or POST request
-    List<Person> personList = userRepository.findByEmail(person.getEmail());
-    if (personList.size() > 0){
+    User user = userRepository.findByEmail(person.getEmail());
+    if (user != null){
       JsonObject jsonObject = new JsonObject();
       jsonObject.addProperty("message", "user email already exists");
       return jsonObject.toString();
     }
     String encrypt = bCryptPasswordEncoder.encode(person.getPass());
-    Person n = new Person();
+    User n = new User();
     n.setPass(encrypt);
     n.setEmail(person.getEmail());
     userRepository.save(n);
@@ -86,6 +84,7 @@ public class HomeController {
     jsonObject.addProperty("message", "Saved");
     return jsonObject.toString();
   }
+
 
 
 }
