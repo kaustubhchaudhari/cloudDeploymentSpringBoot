@@ -3,6 +3,7 @@ package com.csye6225.demo.model;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name="task")
@@ -25,6 +26,9 @@ public class Task
     @Column(name="description", length=4096)
 
     private String description;
+
+    @OneToMany(mappedBy = "task")
+    private List<FileAttachment> fileAttachments;
 
 
     public String getTaskid() {
@@ -50,7 +54,6 @@ public class Task
     public void setUser(User user) {
         this.user = user;
     }
-
 
 
 }

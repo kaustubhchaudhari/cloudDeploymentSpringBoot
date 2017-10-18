@@ -3,30 +3,11 @@ package com.csye6225.demo.model;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
-@Table(name = "file")
+@Table(name="file")
 public class FileAttachment {
-    @Id
-    @Column(name = "fileid")
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(
-            name = "uuid",
-            strategy = "uuid2"
-    )
-    private String fileId;
-
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "taskid")
-    private User task;
-
-
-    @Column(name = "filepath", length = 4096)
-
-    private String filePath;
-
-
     public String getFileId() {
         return fileId;
     }
@@ -35,19 +16,38 @@ public class FileAttachment {
         this.fileId = fileId;
     }
 
-    public String getFilePath() {
-        return filePath;
-    }
+    @Id
+    @Column(name="fileId")
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(
+            name ="uuid",
+            strategy = "uuid2"
+    )
+    private String fileId;
 
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
-    }
-
-    public User getTask() {
+    public Task getTask() {
         return task;
     }
 
-    public void setTask(User task) {
+    public void setTask(Task task) {
         this.task = task;
     }
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "task")
+    private Task task;
+
+
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    @Column(name="location", length=4096)
+
+    private String location;
 }

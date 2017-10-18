@@ -7,9 +7,9 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 
-public interface FileRepository extends CrudRepository<FileAttachment, Long>{
+public interface FileRepository extends CrudRepository<FileAttachment, Long> {
 
     public List<FileAttachment> findByTask(Task task);
 
-    public FileAttachment findByTaskid(String id);
+    public FileAttachment findByFileId(String fileId);
 }
