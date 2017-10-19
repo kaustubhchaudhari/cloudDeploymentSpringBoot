@@ -7,15 +7,8 @@ import java.util.List;
 
 @Entity
 @Table(name="file")
-public class FileAttachment {
-    public String getFileId() {
-        return fileId;
-    }
-
-    public void setFileId(String fileId) {
-        this.fileId = fileId;
-    }
-
+public class FileAttachment
+{
     @Id
     @Column(name="fileId")
     @GeneratedValue(generator = "uuid")
@@ -25,29 +18,40 @@ public class FileAttachment {
     )
     private String fileId;
 
-    public Task getTask() {
-        return task;
+    public String getFileId()
+    {
+        return fileId;
+    }
+    public void setFileId(String fileId)
+    {
+        this.fileId = fileId;
     }
 
-    public void setTask(Task task) {
-        this.task = task;
-    }
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "task")
     private Task task;
-
-
-
-    public String getLocation() {
-        return location;
+    public Task getTask()
+    {
+        return task;
+    }
+    public void setTask(Task task)
+    {
+        this.task = task;
     }
 
-    public void setLocation(String location) {
+
+
+
+    @Column(name="location", length=4096)
+    private String location;
+    public String getLocation()
+    {
+        return location;
+    }
+    public void setLocation(String location)
+    {
         this.location = location;
     }
 
-    @Column(name="location", length=4096)
-
-    private String location;
 }

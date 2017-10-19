@@ -46,14 +46,20 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
     compile('org.springframework.boot:spring-boot-starter-security')
 
+
+    compile group: 'org.springframework.boot', name: 'spring-boot-configuration-processor', version: '1.2.3.RELEASE'
+
+
+
     compile('com.h2database:h2:+')
 
-    
+
     compile('org.apache.commons:commons-lang3:+')
     compile('com.google.guava:guava:+')
     compile('org.apache.httpcomponents:httpclient:+')
     compile('com.google.code.gson:gson:+')
 
+    compile("org.springframework.boot:spring-boot-starter-thymeleaf")
 
     runtime('org.springframework.boot:spring-boot-devtools')
     runtime('mysql:mysql-connector-java')
