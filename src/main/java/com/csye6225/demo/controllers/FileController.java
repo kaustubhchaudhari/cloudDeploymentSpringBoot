@@ -1,5 +1,7 @@
 package com.csye6225.demo.controllers;
 
+import com.csye6225.demo.Storage.StorageProperties;
+import com.csye6225.demo.Storage.StorageService;
 import com.csye6225.demo.model.FileAttachment;
 import com.csye6225.demo.model.Task;
 import com.csye6225.demo.model.User;
@@ -10,11 +12,15 @@ import com.google.gson.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.transaction.Transactional;
+import java.io.File;
 
 @Controller
 public class FileController {
@@ -30,18 +36,16 @@ public class FileController {
 
     private final static Logger logger = LoggerFactory.getLogger(HomeController.class);
 
-    /**
-     * Request format :
-     * {
-     *     taskID :
-     *     file
-     * }
-     * @param
-     * @return
-     * @throws NullPointerException
-     */
+    private final StorageService storageService;
+
+    @Autowired
+    public FileController(StorageService storageService) {
+        this.storageService = storageService;
+    }
+    private StorageProperties stoprop;
+    public String loc;
+
     @RequestMapping(path = "/file/attach", method = RequestMethod.POST, produces = "application/json")
-    // Map ONLY GET Requests
     public @ResponseBody
     String attachFile(@RequestParam("file") MultipartFile file, @RequestParam String taskid) throws NullPointerException {
         if (SecurityContextHolder.getContext().getAuthentication() != null) {
@@ -50,20 +54,77 @@ public class FileController {
             if (null != user) {
                 Task t = taskRepository.findByTaskid(taskid);
                 if (null != t) {
-                    // TO-DO : Store file in filesystem
+                    if(t.getUser()==user)
+                    {
+                        FileAttachment fa = new FileAttachment();
+                        loc=  "/home/prachi/Documents/"+file.getOriginalFilename();
+                        System.out.println("Path: "+ loc);
+                        storageService.store(file);
+                        fa.setLocation(loc);
+                        fa.setTask(t);
+                        fileRepository.save(fa);
+                        JsonObject jsonObject = new JsonObject();
+                        jsonObject.addProperty("message", "Saved successfully");
+                        return jsonObject.toString();
+                    }
 
-                    FileAttachment fa = new FileAttachment();
-                    fa.setLocation("");
-                    fa.setTask(t);
-                    JsonObject jsonObject = new JsonObject();
-                    jsonObject.addProperty("message", "Saved successfully");
-                    jsonObject.addProperty("ID", fa.getFileId());
-                    return jsonObject.toString();
+                    else
+                    {
+                        System.out.println("Wrong Credentials");
+                    }
+                }
+                else
+                {
+                    System.out.println("Outside 4");
                 }
             }
+            else
+            {
+                System.out.println("Outside 3");
+            }
+
+        }
+        else
+        {
+            System.out.println("Outside 2");
         }
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("message", "unauthorized user");
         return jsonObject.toString();
+    }
+
+    @Transactional
+    @PostMapping("/file/delete")
+    @ResponseBody
+    public String del(@RequestParam String filename) throws InvalidDataAccessApiUsageException {
+
+        StorageProperties base = new StorageProperties();
+        String part1 = base.getLocation();
+        String complete = part1 + "/" + filename;
+        File ob = new File(complete);
+        if (SecurityContextHolder.getContext().getAuthentication() != null) {
+            UserDetails ud = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            User user = userRepository.findByEmail(ud.getUsername());
+
+            if (ob.exists()) {
+                FileAttachment fob = fileRepository.findByLocation(complete);
+                Task t = taskRepository.findByTaskid(fob.getTask().getTaskid());
+                if (null != t) {
+                    if (t.getUser() == user) {
+                        ob.delete();
+                        System.out.println("Fileid: ");
+                        System.out.println(fob.getFileId());
+                        taskRepository.deleteTaskByFileAttachmentsAndTaskid(fob, t.getTaskid());
+                        fileRepository.deleteByFileIdAndAndTask(fob.getFileId(),t);
+                        System.out.println("Successfully deleted");
+                        return "redirect:/";
+                    }
+                } else {
+                    System.out.println("Failed");
+                    return "redirect:/";
+                }
+            }
+        }
+        return "";
     }
 }

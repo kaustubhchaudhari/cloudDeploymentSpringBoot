@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_csye6225-fall2017" default="compile.module.csye6225-fall2017">
+  <dirname property="module.csye6225-fall2017.basedir" file="${ant.file.module_csye6225-fall2017}"/>
+  
+  <property name="module.jdk.home.csye6225-fall2017" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.csye6225-fall2017" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.csye6225-fall2017" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.csye6225-fall2017" value="-encoding UTF-8 -source 1.8 -target 1.8 ${compiler.args}"/>
+  
+  <property name="csye6225-fall2017.output.dir" value="${module.csye6225-fall2017.basedir}/out/production/csye6225-fall2017"/>
+  <property name="csye6225-fall2017.testoutput.dir" value="${module.csye6225-fall2017.basedir}/out/test/csye6225-fall2017"/>
+  
+  <path id="csye6225-fall2017.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="csye6225-fall2017.module.production.classpath">
+    <path refid="${module.jdk.classpath.csye6225-fall2017}"/>
+  </path>
+  
+  <path id="csye6225-fall2017.runtime.production.module.classpath">
+    <pathelement location="${csye6225-fall2017.output.dir}"/>
+  </path>
+  
+  <path id="csye6225-fall2017.module.classpath">
+    <path refid="${module.jdk.classpath.csye6225-fall2017}"/>
+    <pathelement location="${csye6225-fall2017.output.dir}"/>
+  </path>
+  
+  <path id="csye6225-fall2017.runtime.module.classpath">
+    <pathelement location="${csye6225-fall2017.testoutput.dir}"/>
+    <pathelement location="${csye6225-fall2017.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.csye6225-fall2017">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.csye6225-fall2017">
+    <patternset refid="excluded.from.module.csye6225-fall2017"/>
+  </patternset>
+  
+  
+  <target name="compile.module.csye6225-fall2017" depends="compile.module.csye6225-fall2017.production,compile.module.csye6225-fall2017.tests" description="Compile module csye6225-fall2017"/>
+  
+  <target name="compile.module.csye6225-fall2017.production" depends="register.custom.compilers" description="Compile module csye6225-fall2017; production classes"/>
+  
+  <target name="compile.module.csye6225-fall2017.tests" depends="register.custom.compilers,compile.module.csye6225-fall2017.production" description="compile module csye6225-fall2017; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.csye6225-fall2017" description="cleanup module">
+    <delete dir="${csye6225-fall2017.output.dir}"/>
+    <delete dir="${csye6225-fall2017.testoutput.dir}"/>
+  </target>
+</project>
