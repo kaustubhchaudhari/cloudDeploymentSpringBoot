@@ -1,0 +1,110 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Sample CloudFormation Template for CSYE 6225 - Fall 2017",
+    "Resources": {
+        "EC2Instance": {
+            "Type": "AWS::EC2::Instance",
+            "Properties": {
+                "ImageId": "ami-cd0f5cb6",
+                "InstanceType": "t2.micro",
+                "SecurityGroupIds": [
+                    {
+                        "Fn::GetAtt": [
+                            "WebAppSecurityGroup",
+                            "GroupId"
+                        ]
+                    }
+                ],
+                "KeyName": "csye6225-webapp",
+                "SubnetId": "subnet-3e89ae32"
+            }
+        },
+
+
+                    "MyDB" : {
+               "Type" : "AWS::RDS::DBInstance",
+               "Properties" : {
+                  "DBName" : "csye6225",
+                  "AllocatedStorage" : "1",
+                  "DBInstanceClass" : "db.t2.medium",
+                  "Engine" : "MySQL",
+                  "EngineVersion" : "5.6.35",
+                  "MultiAZ" : False,
+                  "DBInstanceIdentifier" : "csye6225-fall2017",
+
+                  "MasterUsername" : "csye6225master",
+                  "MasterUserPassword" : "csye6225password",
+                  "PubliclyAccessible" : False,
+                  "Tags" : [ { "Key" : "Name", "Value" : "My SQL Database" } ]
+               },
+               "DeletionPolicy" : "Snapshot"
+            }         
+
+
+        "csye6225-webapp": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "GroupDescription": "Enable HTTP access via port 80, SSH access via port 22, SSL access via port 443",
+                "VpcId": "vpc-efca2a97",
+                "SecurityGroupIngress": [
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "80",
+                        "ToPort": "80",
+                        "CidrIp": "0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "22",
+                        "ToPort": "22",
+                        "CidrIp": "0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol": "tcp",
+                        "FromPort": "443",
+                        "ToPort": "443",
+                        "CidrIp": "0.0.0.0/0"
+                    }
+                ]
+            }
+        }
+
+        "csye6225-rds": {
+            "Type": "AWS::RDS::SecurityGroup",
+            "Properties": {
+                "GroupDescription": "Open database for access",
+                "SecurityGroupIngress": [{
+                    "IpProtocol": "tcp",
+                    "FromPort": "3306",
+                    "ToPort": "3306",
+                    "SourceSecurityGroupId": {
+                        "Fn::GetAtt": [
+                            "SecurityGroup",
+                            "GroupId"
+                        ]
+                    }
+                }]
+            }
+        },
+
+        "S3Bucket" : {
+           "Type" : "AWS::S3::Bucket",
+           "Description" : "Name of S3 bucket to hold website content",
+               "Properties" : {
+               "AccessControl" : "PublicRead",
+               "BucketName" : "csye6225-fall2017-chaudharik.me.csye.com"
+   }
+},
+
+        "DBSubnet": {
+            "Type": "AWS::RDS::DBSubnetGroup",
+            "Properties": {
+                "DBSubnetGroupDescription": "description",
+                "SubnetIds": ["subnet-3e89ae32", "subnet-34da7650"]
+            }
+        }
+
+
+
+    }
+}
