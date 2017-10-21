@@ -6,7 +6,21 @@ sudo: false
 install: true
 
 script:
+  - ./gradlew build
   - ./gradlew war
+
+after_success:
+  - mkdir codedeploy
+  - zip -r MyProject.zip build/libs/ROOT.war appspec.yml
+  - ls -al
+  - pwd
+  - cd codedeploy
+  - ls -al
+  - pwd
+
+before_deploy:
+  - cd..
+
 notifications:
   email:
     recipients:
@@ -15,4 +29,5 @@ notifications:
       - chaudhari.k@husky.neu.edu
       - saxena.pr@husky.neu.edu
 
-  services: mysql
+services: mysql
+
