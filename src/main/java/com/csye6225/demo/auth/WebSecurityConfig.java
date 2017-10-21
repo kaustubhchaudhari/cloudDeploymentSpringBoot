@@ -10,7 +10,10 @@ package com.csye6225.demo.auth;
 import com.csye6225.demo.model.User;
 import com.csye6225.demo.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.boot.web.support.ErrorPageFilter;
 import org.springframework.context.annotation.Bean;
+import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -21,6 +24,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.session.web.http.HeaderHttpSessionStrategy;
 import org.springframework.session.web.http.HttpSessionStrategy;
+
+import javax.persistence.EntityManagerFactory;
 
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -51,6 +56,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new HeaderHttpSessionStrategy();
     }
 
+    /*@Bean
+    public JpaTransactionManager transactionManager(EntityManagerFactory emf) {
+        return new JpaTransactionManager(emf);
+    }
+*/
     @Bean
     public UserDetailsService userDetailsService() {
         return new UserDetailsService() {
@@ -64,5 +74,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 }
             }
         };
+    }
+
+
+
+    //NEXT TWO RESPONSE SETTING
+    @Bean
+    public ErrorPageFilter errorPageFilter() {
+        return new ErrorPageFilter();
+    }
+
+    @Bean
+    public FilterRegistrationBean disableSpringBootErrorFilter(ErrorPageFilter filter) {
+        FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
+        filterRegistrationBean.setFilter(filter);
+        filterRegistrationBean.setEnabled(false);
+        return filterRegistrationBean;
     }
 }

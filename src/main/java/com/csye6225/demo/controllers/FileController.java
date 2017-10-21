@@ -9,18 +9,27 @@ import com.csye6225.demo.repositories.FileRepository;
 import com.csye6225.demo.repositories.TaskRepository;
 import com.csye6225.demo.repositories.UserRepository;
 import com.google.gson.JsonObject;
+import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.PostRemove;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
 
 @Controller
 public class FileController {
@@ -33,6 +42,8 @@ public class FileController {
 
     @Autowired
     private FileRepository fileRepository;
+
+    //HttpServletResponse response;
 
     private final static Logger logger = LoggerFactory.getLogger(HomeController.class);
 
@@ -47,7 +58,7 @@ public class FileController {
 
     @RequestMapping(path = "/file/attach", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
-    String attachFile(@RequestParam("file") MultipartFile file, @RequestParam String taskid) throws NullPointerException {
+    String attachFile(@RequestParam("file") MultipartFile file, @RequestParam String taskid, HttpServletRequest request, HttpServletResponse response) throws NullPointerException {
         if (SecurityContextHolder.getContext().getAuthentication() != null) {
             UserDetails ud = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             User user = userRepository.findByEmail(ud.getUsername());
@@ -70,7 +81,14 @@ public class FileController {
 
                     else
                     {
-                        System.out.println("Wrong Credentials");
+                        try
+                        {
+                            System.out.println("Wrong Credentials");
+                            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                        }
+                        catch (Exception e)
+                        {
+                        }
                     }
                 }
                 else
@@ -96,7 +114,7 @@ public class FileController {
     @Transactional
     @PostMapping("/file/delete")
     @ResponseBody
-    public String del(@RequestParam String filename) throws InvalidDataAccessApiUsageException {
+    public String del(@RequestParam String filename, HttpServletRequest request, HttpServletResponse response) throws InvalidDataAccessApiUsageException {
 
         StorageProperties base = new StorageProperties();
         String part1 = base.getLocation();
@@ -114,17 +132,77 @@ public class FileController {
                         ob.delete();
                         System.out.println("Fileid: ");
                         System.out.println(fob.getFileId());
-                        taskRepository.deleteTaskByFileAttachmentsAndTaskid(fob, t.getTaskid());
-                        fileRepository.deleteByFileIdAndAndTask(fob.getFileId(),t);
+                        //taskRepository.deleteTaskByFileAttachmentsAndTaskid(fob, t.getTaskid());
+                        fileRepository.deleteByFileId(fob.getFileId());
                         System.out.println("Successfully deleted");
                         return "redirect:/";
                     }
-                } else {
-                    System.out.println("Failed");
-                    return "redirect:/";
+                } else
+                {
+                    try
+                    {
+                        System.out.println("Wrong Credentials");
+                        response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                    }
+                    catch (Exception e)
+                    {
+                    }
                 }
             }
         }
         return "";
+    }
+
+    @RequestMapping(path = "/tasks/{taskid}/attachments", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    String showFiles(@PathVariable("taskid") String taskid, HttpServletRequest request, HttpServletResponse response) throws NullPointerException, IOException, ServletException {
+        System.out.println("Inside");
+        if (SecurityContextHolder.getContext().getAuthentication() != null) {
+            UserDetails ud = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            User user = userRepository.findByEmail(ud.getUsername());
+            System.out.println("Username: " + user.getEmail());
+            if (null != user) {
+                Task t = taskRepository.findByTaskid(taskid);
+                if (null != t) {
+                    if(t.getUser()==user)
+                    {
+                        List<FileAttachment> files=fileRepository.findByTask(t);
+                        for (FileAttachment file:files)
+                        {
+                            JsonObject jsonObject = new JsonObject();
+                            jsonObject.addProperty(file.getFileId(), file.getLocation());
+                            System.out.println(jsonObject.toString());
+                        }
+
+                    }
+
+                    else
+                    {
+                        try
+                        {
+                            System.out.println("Wrong Credentials");
+                            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                        }
+                        catch (Exception e)
+                        {
+                        }
+                    }
+                }
+                else
+                {
+                    System.out.println("Outside 4");
+                }
+            }
+            else
+            {
+                System.out.println("Outside 3");
+            }
+
+        }
+        else
+        {
+            System.out.println("Outside 2");
+        }
+        return"";
     }
 }

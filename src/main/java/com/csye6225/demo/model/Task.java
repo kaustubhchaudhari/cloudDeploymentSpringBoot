@@ -27,7 +27,16 @@ public class Task
 
     private String description;
 
+    public List<FileAttachment> getFileAttachments() {
+        return fileAttachments;
+    }
+
+    public void setFileAttachments(List<FileAttachment> fileAttachments) {
+        this.fileAttachments = fileAttachments;
+    }
+
     @OneToMany(mappedBy = "task")
+
     private List<FileAttachment> fileAttachments;
 
 

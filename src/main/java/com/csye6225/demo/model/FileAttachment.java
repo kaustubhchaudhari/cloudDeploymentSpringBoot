@@ -28,9 +28,12 @@ public class FileAttachment
     }
 
 
-    @ManyToOne(cascade = CascadeType.ALL)
+//cascade = CascadeType.DETACH,
+    @ManyToOne()
     @JoinColumn(name = "task")
     private Task task;
+
+
     public Task getTask()
     {
         return task;

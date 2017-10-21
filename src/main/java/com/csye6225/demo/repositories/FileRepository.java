@@ -15,5 +15,6 @@ public interface FileRepository extends CrudRepository<FileAttachment, Long> {
 
     public FileAttachment findByLocation(String location);
 
-    public void deleteByFileIdAndAndTask(String fileId, Task task);
+    public void deleteByFileId(String fileId);
+
 }
