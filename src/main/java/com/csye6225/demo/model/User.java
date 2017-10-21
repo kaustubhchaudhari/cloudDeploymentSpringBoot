@@ -8,10 +8,9 @@ package com.csye6225.demo.model;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
+
 @Entity
 public class User {
     @Id
@@ -25,6 +24,9 @@ public class User {
     private String pass;
 
     private String email;
+
+    @OneToMany(mappedBy = "user")
+    private List<Task> taskList;
 
     public String getId() {
         return id;
