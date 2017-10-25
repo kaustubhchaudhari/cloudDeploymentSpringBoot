@@ -8,9 +8,12 @@ package com.csye6225.demo.repositories;
 
 //import org.springframework.data.repository.CrudRepository;
 import com.csye6225.demo.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
+import com.csye6225.demo.repositories.UserRepository;
 
-public interface UserRepository extends CrudRepository<User, Long> {
 
+public interface UserRepository extends CrudRepository<User, Long>
+{
     public User findByEmail(String email);
 }
