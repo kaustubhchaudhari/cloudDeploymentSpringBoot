@@ -1,6 +1,8 @@
 package com.csye6225.demo.model;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.List;
@@ -17,7 +19,7 @@ public class FileAttachment
             strategy = "uuid2"
     )
     private String fileId;
-
+    //private FileAttachment fileAttachment;
     public String getFileId()
     {
         return fileId;
@@ -28,12 +30,10 @@ public class FileAttachment
     }
 
 
-//cascade = CascadeType.DETACH,
-    @ManyToOne()
-    @JoinColumn(name = "task")
+    @ManyToOne
+    @JoinColumn(name = "taskid")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Task task;
-
-
     public Task getTask()
     {
         return task;
@@ -57,4 +57,13 @@ public class FileAttachment
         this.location = location;
     }
 
+    private String originalName;
+
+    public String getOriginalName() {
+        return originalName;
+    }
+
+    public void setOriginalName(String originalName) {
+        this.originalName = originalName;
+    }
 }
