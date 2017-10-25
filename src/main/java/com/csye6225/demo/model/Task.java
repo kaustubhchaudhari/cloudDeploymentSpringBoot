@@ -1,6 +1,8 @@
 package com.csye6225.demo.model;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.List;
@@ -18,7 +20,7 @@ public class Task
     )
     private String taskid;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "id")
     private User user;
 
@@ -27,9 +29,16 @@ public class Task
 
     private String description;
 
-    @OneToMany(mappedBy = "task")
-    private List<FileAttachment> fileAttachments;
+    public List<FileAttachment> getFileAttachments() {
+        return fileAttachments;
+    }
 
+    public void setFileAttachments(List<FileAttachment> fileAttachments) {
+        this.fileAttachments = fileAttachments;
+    }
+
+    @OneToMany(mappedBy = "task", orphanRemoval = true,cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    private List<FileAttachment> fileAttachments;
 
     public String getTaskid() {
         return taskid;

@@ -56,15 +56,19 @@ public class FileController {
                 if (null != t) {
                     if(t.getUser()==user)
                     {
+                        String fileName = t.getTaskid() + "_" +t.getFileAttachments().size() + 1;
                         FileAttachment fa = new FileAttachment();
-                        loc=  "/home/prachi/Documents/"+file.getOriginalFilename();
+                        loc=  "/home/andy/Documents/"+fileName;
+
                         System.out.println("Path: "+ loc);
-                        storageService.store(file);
+                        storageService.store(file, fileName);
                         fa.setLocation(loc);
                         fa.setTask(t);
+                        fa.setOriginalName(file.getOriginalFilename());
                         fileRepository.save(fa);
                         JsonObject jsonObject = new JsonObject();
                         jsonObject.addProperty("message", "Saved successfully");
+                        jsonObject.addProperty("FileId", fa.getFileId());
                         return jsonObject.toString();
                     }
 
@@ -96,35 +100,39 @@ public class FileController {
     @Transactional
     @PostMapping("/file/delete")
     @ResponseBody
-    public String del(@RequestParam String filename) throws InvalidDataAccessApiUsageException {
+    public String del(@RequestParam String fileId) throws InvalidDataAccessApiUsageException {
 
-        StorageProperties base = new StorageProperties();
-        String part1 = base.getLocation();
-        String complete = part1 + "/" + filename;
-        File ob = new File(complete);
+
+
         if (SecurityContextHolder.getContext().getAuthentication() != null) {
             UserDetails ud = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             User user = userRepository.findByEmail(ud.getUsername());
-
-            if (ob.exists()) {
-                FileAttachment fob = fileRepository.findByLocation(complete);
-                Task t = taskRepository.findByTaskid(fob.getTask().getTaskid());
-                if (null != t) {
-                    if (t.getUser() == user) {
-                        ob.delete();
-                        System.out.println("Fileid: ");
-                        System.out.println(fob.getFileId());
-                        taskRepository.deleteTaskByFileAttachmentsAndTaskid(fob, t.getTaskid());
-                        fileRepository.deleteByFileIdAndAndTask(fob.getFileId(),t);
-                        System.out.println("Successfully deleted");
-                        return "redirect:/";
+            if (null != user) {
+                FileAttachment fa = fileRepository.findByFileId(fileId);
+                if (null != fa) {
+                    File ob = new File(fa.getLocation());
+                    if (ob.exists()) {
+                        //FileAttachment fob = fileRepository.findByLocation(complete);
+                        Task t = taskRepository.findByTaskid(fa.getTask().getTaskid());
+                        if (null != t) {
+                            if (t.getUser() == user) {
+                                ob.delete();
+                                System.out.println("Fileid: ");
+                                System.out.println(fa.getFileId());
+                                //taskRepository.deleteTaskByFileAttachmentsAndTaskid(fob, t.getTaskid());
+                                //fileRepository.deleteByFileIdAndAndTask(fob.getFileId(), t);
+                                fileRepository.delete(fa);
+                                JsonObject jsonObject = new JsonObject();
+                                jsonObject.addProperty("message","File Delted Succesfully");
+                                return jsonObject.toString();
+                            }
+                        }
                     }
-                } else {
-                    System.out.println("Failed");
-                    return "redirect:/";
                 }
             }
-        }
-        return "";
+        }JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("message","Could not delete  ");
+        return jsonObject.toString();
+
     }
 }
