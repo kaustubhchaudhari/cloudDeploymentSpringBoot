@@ -30,6 +30,8 @@ deploy:
     bucket: code-deploy.csye6225-fall2017-saxenapr.me
     region: us-east-1
     skip_cleanup: true
+    on:
+      all branches true
 
 notifications:
   email:
