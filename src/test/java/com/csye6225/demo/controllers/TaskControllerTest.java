@@ -30,7 +30,7 @@ public class TaskControllerTest {
     @Test
     public void git () throws Exception
     {
-        /*Task t= new Task();
+        Task t= new Task();
         User use= new User();
         use.setEmail("l");
         use.setPass("l");
@@ -45,7 +45,7 @@ public class TaskControllerTest {
         {
             String des= tob.getDescription();
             Assert.assertEquals("Description for lllllllllllllllllll", des);
-        }*/
+        }
 
     }
 
