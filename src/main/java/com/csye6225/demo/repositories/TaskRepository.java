@@ -8,7 +8,8 @@ import java.util.List;
 
 
 
-public interface TaskRepository extends CrudRepository<Task, Long> {
+public interface TaskRepository extends CrudRepository<Task, Long>
+{
 
     public List<Task> findByUser(User user);
 
