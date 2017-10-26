@@ -28,7 +28,7 @@ public class TaskControllerTest {
     private TaskRepository taskRepository;
 
     @Test
-    public void addNewTask() throws Exception
+    public void git () throws Exception
     {
         Task t= new Task();
         User use= new User();
