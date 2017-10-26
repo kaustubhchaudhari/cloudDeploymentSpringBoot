@@ -1,9 +1,6 @@
 AMI="ami-cd0f5cb6"
 INSTANCE_TYPE="t2.micro"
-KEYPAIR_NAME="csye6225-aws"
-
-
-aws cloudformation create-stack --stack-name $1 --template-body file://template.json --parameters ParameterKey=ImageId,ParameterValue=$AMI ParameterKey=InstanceType,ParameterValue=$INSTANCE_TYPE ParameterKey=KeyName,ParameterValue=$KEYPAIR_NAME ParameterKey=DBEngine,ParameterValue=MySQL ParameterKey=EngineVersion,ParameterValue=5.6.35 ParameterKey=DBInstanceClass,ParameterValue=db.t2.medium  ParameterKey=DBInstanceIdentifier,ParameterValue=csye6225-fall2017 ParameterKey=MasterUsername,ParameterValue=csye6225master ParameterKey=MasterPassword,ParameterValue=csye6225password ParameterKey=DBName,ParameterValue=csye6225 ParameterKey=DynamoDBTableName,ParameterValue=csye6225 ParameterKey=BucketName,ParameterValue=csye6225-fall2017-chaudharik.me.csye.com
+KEYPAIR_NAME="id_ras1"
  
 aws cloudformation wait stack-create-complete --stack-name $1
 VOLUME_ID=(aws ec2 create-volume --size 16 --region us-east-1 --availability-zone us-east-1c --volume-type gp2)

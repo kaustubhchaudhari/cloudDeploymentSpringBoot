@@ -25,7 +25,7 @@ public class User {
 
     private String email;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", orphanRemoval = true )
     private List<Task> taskList;
 
     public String getId() {

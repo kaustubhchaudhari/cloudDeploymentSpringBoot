@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class StorageProperties {
 
-    private String location = "/home/prachi/Documents";
+    private String location = "/home/andy/Documents";
 
     public String getLocation() {
         return location;
