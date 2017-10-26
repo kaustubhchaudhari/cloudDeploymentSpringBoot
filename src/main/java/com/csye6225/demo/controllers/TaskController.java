@@ -1,8 +1,10 @@
 package com.csye6225.demo.controllers;
 
 
+import com.csye6225.demo.model.FileAttachment;
 import com.csye6225.demo.model.Task;
 import com.csye6225.demo.model.User;
+import com.csye6225.demo.repositories.FileRepository;
 import com.csye6225.demo.repositories.TaskRepository;
 import com.csye6225.demo.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +15,9 @@ import org.springframework.stereotype.Controller;
 import com.google.gson.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.util.List;
 
 
@@ -31,18 +29,32 @@ public class TaskController {
     @Autowired
     private TaskRepository taskRepository;
 
+    @Autowired
+    private FileRepository fileRepository;
+
 
     private final static Logger logger = LoggerFactory.getLogger(HomeController.class);
 
+    /**
+     *
+     * Request format :
+     * {
+     "description" : "task for user53434343"
+
+     }
+     * @param task
+     * @return
+     * @throws NullPointerException
+     */
     @RequestMapping(path = "/task/create", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-    public @ResponseBody String addNewTask(@RequestBody Task task, HttpServletRequest request, HttpServletResponse response) throws NullPointerException {
+    // Map ONLY GET Requests
+    public @ResponseBody
+    String addNewTask(@RequestBody Task task) throws NullPointerException {
         if (SecurityContextHolder.getContext().getAuthentication() != null) {
             UserDetails ud = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             User user = userRepository.findByEmail(ud.getUsername());
             if (null != user) {
                 Task t = new Task();
-                if(t.getDescription().length()<=4096)
-                {
                 t.setDescription(task.getDescription());
                 t.setUser(user);
                 taskRepository.save(t);
@@ -51,18 +63,6 @@ public class TaskController {
                 jsonObject.addProperty("message", "Saved successfully");
                 jsonObject.addProperty("ID", t.getTaskid());
                 return jsonObject.toString();
-                }
-                else
-                {
-                    try
-                    {
-                        System.out.println("File content longer than allowed");
-                        response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-                    }
-                    catch (Exception e)
-                    {
-                    }
-                }
             }
         }
         JsonObject jsonObject = new JsonObject();
@@ -70,6 +70,17 @@ public class TaskController {
         return jsonObject.toString();
     }
 
+    /**
+     * request format
+     * {
+     "taskid" :"5389dfb7-b536-403e-acd3-9b3885a792bd", -- taskID
+     "description" : "task for user53434343"
+
+     }
+     * @param task
+     * @return
+     * @throws NullPointerException
+     */
     @RequestMapping(path = "/task/update", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     // Map ONLY GET Requests
     public @ResponseBody
@@ -94,29 +105,55 @@ public class TaskController {
         return jsonObject.toString();
     }
 
-    @RequestMapping(path = "/tasks", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody String showTasks() throws NullPointerException {
+    /**
+     * request format
+     * {
+     "taskid" :"5389dfb7-b536-403e-acd3-9b3885a792bd", -- taskID
+     "description" : "task for user53434343"
+
+     }
+     * @param task
+     * @return
+     * @throws NullPointerException
+     */
+    @RequestMapping(path = "/task/delete", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    // Map ONLY GET Requests
+    public @ResponseBody
+    String deleteTask(@RequestBody Task task) throws NullPointerException {
         if (SecurityContextHolder.getContext().getAuthentication() != null) {
-            System.out.println("Entered");
             UserDetails ud = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             User user = userRepository.findByEmail(ud.getUsername());
-            System.out.println("Tasks of user with user email "+user.getEmail());
-            if (null != user) {
-                List<Task> tasks= taskRepository.findByUser(user);
-                for (Task t:tasks)
-                {
-                    JsonObject jsonObject = new JsonObject();
-                    jsonObject.addProperty(t.getTaskid(), t.getDescription());
-                    System.out.println(jsonObject.toString());
+            try {
+                if (null != user) {
+
+                    Task t = taskRepository.findByTaskid(task.getTaskid());
+                    if (t.getUser() == user) {
+                        List<FileAttachment> list = t.getFileAttachments();
+                        for (FileAttachment fa : list) {
+                            File ob = new File(fa.getLocation());
+                            if (ob.exists()) {
+                                ob.delete();
+                                System.out.println("Fileid: ");
+                                System.out.println(fa.getFileId());
+                                //fileRepository.delete(fa);
+                            }
+                        }
+                        taskRepository.delete(t);
+                        JsonObject jsonObject = new JsonObject();
+                        jsonObject.addProperty("message", "Deleted successfully");
+                        jsonObject.addProperty("ID", t.getTaskid());
+                        return jsonObject.toString();
+                    }
                 }
+            } catch (Exception e) {
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("message", e.getMessage());
+                return jsonObject.toString();
             }
         }
-        else {
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("message", "unauthorized user");
-            return jsonObject.toString();
-        }
-        return "";
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("message", "unauthorized user");
+        return jsonObject.toString();
     }
 
 }
