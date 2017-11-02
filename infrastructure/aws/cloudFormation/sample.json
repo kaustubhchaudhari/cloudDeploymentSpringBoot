@@ -1,4 +1,6 @@
 {
+
+  
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "CloudFormation_Template_CSYE6225_Fall2017",
   "Resources": {
