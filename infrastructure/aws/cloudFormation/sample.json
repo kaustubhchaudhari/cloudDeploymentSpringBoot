@@ -1,68 +1,98 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "Sample CloudFormation Template for CSYE 6225 - Fall 2017",
-  "Parameters": {
-    "ImageId": {
-      "Type": "String"
-    },
-    "InstanceType": {
-      "Type": "String"
-    },
-    "KeyName": {
-      "Type": "String"
-    },
-    "DBEngine": {
-      "Type": "String"
-    },
-    "EngineVersion": {
-      "Type": "String"
-    },
-    "DBInstanceClass": {
-      "Type": "String"
-    },
-    "DBInstanceIdentifier": {
-      "Type": "String"
-    },
-    "MasterUsername": {
-      "Type": "String"
-    },
-    "MasterPassword": {
-      "Type": "String"
-    },
-    "DBName": {
-      "Type": "String"
-    },
-    "DynamoDBTableName": {
-      "Type": "String"
-    },
-    "BucketName": {
-      "Type": "String"
-    },
-    "HostedZoneName": {
-      "Type": "String"
-    },
-    "HostedZoneId": {
-      "Type": "String"
-    },
-    "Subnet1": {
-      "Type": "String"
-    },
-    "Subnet2": {
-      "Type": "String"
-    },
-    "VpcId": {
-      "Type": "String"
-    }
-  },
+  "Description": "CloudFormation_Template_CSYE6225_Fall2017",
   "Resources": {
-    "SecurityGroup": {
+    "EC2Instance": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "ImageId": "ami-cd0f5cb6",
+        "InstanceType": "t2.micro",
+        "SecurityGroupIds": [
+          {
+            "Fn::GetAtt": [
+              "WebServerSecurityGroup",
+              "GroupId"
+            ]
+          }
+        ],
+        "DisableApiTermination": "true",
+        "IamInstanceProfile": {
+          "Ref": "MyIamProfile"
+        },
+        "BlockDeviceMappings": [
+          {
+            "DeviceName": "/dev/sda1",
+            "Ebs": {
+              "VolumeSize": "16",
+              "VolumeType": "gp2"
+            }
+          }
+        ],
+        "KeyName": "id_rsa",
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Join": [
+              "\n",
+              [
+                "#!/bin/bash",
+                "sudo apt-get update",
+                "sudo add-apt-repository -y ppa:webupd8team/java",
+                "sudo apt-get update",
+                "echo \"oracle-java8-installer shared/accepted-oracle-license-v1-1 select true\" | sudo debconf-set-selections",
+                "sudo apt-get install oracle-java8-installer -y",
+                "sudo dpkg -P oracle-java8-installer",
+                "sudo apt-get -f install",
+                "sudo apt-get install tomcat8 -y",
+                "sudo apt-get update",
+                "sudo apt-get install ruby -y",
+                "sudo apt-get install wget",
+                "cd /home/ubuntu",
+                "wget https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install",
+                "sudo chmod +x ./install",
+                "sudo ./install auto",
+                "sudo service codedeploy-agent status",
+                "sudo service codedeploy-agent start",
+                "sudo service codedeploy-agent status",
+                "echo '#!/bin/sh' > /usr/share/tomcat8/bin/setenv.sh",
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.url=\"jdbc:mysql://",
+                      {
+                        "Fn::GetAtt": [
+                          "MyDB",
+                          "Endpoint.Address"
+                        ]
+                      },
+                      ":3306/csye6225\"\"' >> /usr/share/tomcat8/bin/setenv.sh"
+                    ]
+                  ]
+                },
+                "echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.username=csye6225master\"' >> /usr/share/tomcat8/bin/setenv.sh",
+                "echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.password=csye6225password\"' >> /usr/share/tomcat8/bin/setenv.sh",
+                "echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.amazon.s3.default-bucket=csye6225master\"' >> /usr/share/tomcat8/bin/setenv.sh",
+                "echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.profiles.active=aws\"' >> /usr/share/tomcat8/bin/setenv.sh",
+                "chmod +x /usr/share/tomcat8/bin/setenv.sh",
+                "chown tomcat8:tomcat8 /usr/share/tomcat8/bin/setenv.sh"
+              ]
+            ]
+          }
+        },
+        "Tags": [
+          {
+            "Key": "NAME",
+            "Value": "CSYE6225"
+          }
+        ]
+      }
+    },
+    "WebServerSecurityGroup": {
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
-        "GroupDescription": "Enable HTTP access via port 80, SSH access via port 22, HTTPS via port 443",
-        "VpcId": {
-          "Ref": "VpcId"
-        },
-        "GroupName": "csye6225-webapp",
+        "GroupName": "csye6225-fall2017-placeHolder-webapp",
+        "GroupDescription": "Enable HTTP access via port 80, SSH access via port 22",
+        "VpcId": "placeHolder",
         "SecurityGroupIngress": [
           {
             "IpProtocol": "tcp",
@@ -81,173 +111,28 @@
             "FromPort": "443",
             "ToPort": "443",
             "CidrIp": "0.0.0.0/0"
-          }
-        ]
-      }
-    },
-    "DbSecurityByEC2SecurityGroup": {
-      "Type": "AWS::EC2::SecurityGroup",
-      "Properties": {
-        "GroupDescription": "Open database for access",
-        "SecurityGroupIngress": [
+          },
           {
             "IpProtocol": "tcp",
-            "FromPort": "3306",
-            "ToPort": "3306",
-            "SourceSecurityGroupId": {
-              "Fn::GetAtt": [
-                "SecurityGroup",
-                "GroupId"
-              ]
-            }
+            "FromPort": "8080",
+            "ToPort": "8080",
+            "CidrIpv6": "::/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "8080",
+            "ToPort": "8080",
+            "CidrIp": "0.0.0.0/0"
           }
         ]
-      }
-    },
-    "EC2Instance": {
-      "Type": "AWS::EC2::Instance",
-      "Properties": {
-        "ImageId": {
-          "Ref": "ImageId"
-        },
-        "InstanceType": {
-          "Ref": "InstanceType"
-        },
-        "SecurityGroupIds": [
-          {
-            "Fn::GetAtt": [
-              "SecurityGroup",
-              "GroupId"
-            ]
-          }
-        ],
-        "IamInstanceProfile": {
-          "Ref": "MyIamProfile"
-        },
-        "KeyName": {
-          "Ref": "KeyName"
-        },
-        "UserData": {
-          "Fn::Base64": {
-            "Fn::Join": [
-              "",
-              [
-                "#!/bin/bash\n",
-                "export DEBIAN_FRONTEND=noninteractive\n",
-                "apt-get update && apt-get upgrade -y\n",
-                "apt-get -y install tomcat8\n",
-                "sudo apt-get update\n",
-                "sudo apt-get -y install ruby\n",
-                "sudo apt-get install wget\n",
-                "cd /home/ubuntu\n",
-                "wget https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install\n",
-                "chmod +x ./install\n",
-                "sudo ./install auto\n",
-                "sudo service codedeploy-agent status",
-                "sudo service codedeploy-agent start",
-                "sudo service codedeploy-agent status",
-                "echo '#!/bin/sh' > /usr/share/tomcat8/bin/setenv.sh",
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.url=\"jdbc:mysql://",
-                      {
-                        "Fn::GetAtt": [
-                          "DBInstance",
-                          "Endpoint.Address"
-                        ]
-                      },
-                      ":3306/csye6225\"\"' >> /usr/share/tomcat8/bin/setenv.sh"
-                    ]
-                  ]
-                },
-                "echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.username=csye6225master\"' >> /usr/share/tomcat8/bin/setenv.sh",
-                "echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.password=csye6225password\"' >> /usr/share/tomcat8/bin/setenv.sh",
-                "echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.amazon.s3.default-bucket=csye6225master\"' >> /usr/share/tomcat8/bin/setenv.sh",
-                "echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.profiles.active=aws\"' >> /usr/share/tomcat8/bin/setenv.sh",
-                "chmod +x /usr/share/tomcat8/bin/setenv.sh",
-                "chown tomcat8:tomcat8 /usr/share/tomcat8/bin/setenv.sh"
-              ]
-            ]
-          }
-        }
-      }
-    },
-    "DBInstance": {
-      "Type": "AWS::RDS::DBInstance",
-      "Properties": {
-        "AllocatedStorage": "100",
-        "Engine": {
-          "Ref": "DBEngine"
-        },
-        "EngineVersion": {
-          "Ref": "EngineVersion"
-        },
-        "DBInstanceClass": {
-          "Ref": "DBInstanceClass"
-        },
-        "MultiAZ": "false",
-        "DBInstanceIdentifier": {
-          "Ref": "DBInstanceIdentifier"
-        },
-        "MasterUsername": {
-          "Ref": "MasterUsername"
-        },
-        "MasterUserPassword": {
-          "Ref": "MasterPassword"
-        },
-        "DBSubnetGroupName": {
-          "Ref": "DBSubnet"
-        },
-        "VPCSecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "DbSecurityByEC2SecurityGroup",
-              "GroupId"
-            ]
-          }
-        ],
-        "PubliclyAccessible": "false",
-        "DBName": {
-          "Ref": "DBName"
-        }
-      }
-    },
-    "DynamoDBTable": {
-      "Type": "AWS::DynamoDB::Table",
-      "Properties": {
-        "AttributeDefinitions": [
-          {
-            "AttributeName": "PrimaryId",
-            "AttributeType": "S"
-          }
-        ],
-        "KeySchema": [
-          {
-            "AttributeName": "PrimaryId",
-            "KeyType": "HASH"
-          }
-        ],
-        "ProvisionedThroughput": {
-          "ReadCapacityUnits": "5",
-          "WriteCapacityUnits": "5"
-        },
-        "TableName": {
-          "Ref": "DynamoDBTableName"
-        }
       }
     },
     "myDNSRecord": {
       "Type": "AWS::Route53::RecordSet",
       "Properties": {
-        "Name": {
-          "Ref": "HostedZoneName"
-        },
-        "HostedZoneId": {
-          "Ref": "HostedZoneId"
-        },
         "Comment": "DNS name for my instance.",
+        "HostedZoneName": "placeHolder",
+        "Name": "ec2.placeHolder",
         "Type": "A",
         "TTL": "60",
         "ResourceRecords": [
@@ -260,14 +145,107 @@
         ]
       }
     },
+    "DataBaseServerSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupName": "csye6225-rds",
+        "GroupDescription": "Enable HTTP access via port 80, SSH access via port 22",
+        "VpcId": "placeHolder",
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "3306",
+            "ToPort": "3306",
+            "SourceSecurityGroupId": {
+              "Fn::GetAtt": [
+                "WebServerSecurityGroup",
+                "GroupId"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "myDynamoDBTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "KeySchema": [
+          {
+            "AttributeName": "ID",
+            "KeyType": "HASH"
+          }
+        ],
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "ID",
+            "AttributeType": "N"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": "5",
+          "WriteCapacityUnits": "5"
+        },
+        "TableName": "ToDoTask"
+      }
+    },
+    "subnet1": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": "placeHolder",
+        "AvailabilityZone": "us-east-1a",
+        "CidrBlock": "172.31.96.0/20"
+      }
+    },
+    "subnet2": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": "placeHolder",
+        "AvailabilityZone": "us-east-1b",
+        "CidrBlock": "172.31.112.0/20"
+      }
+    },
+    "DBSubnetGroup": {
+      "Type": "AWS::RDS::DBSubnetGroup",
+      "Properties": {
+        "DBSubnetGroupDescription": "Subnet for DB",
+        "SubnetIds": [
+          {
+            "Ref": "subnet1"
+          },
+          {
+            "Ref": "subnet2"
+          }
+        ]
+      }
+    },
+    "MyDB": {
+      "Type": "AWS::RDS::DBInstance",
+      "Properties": {
+        "VPCSecurityGroups": [
+          {
+            "Ref": "DataBaseServerSecurityGroup"
+          }
+        ],
+        "AllocatedStorage": "5",
+        "DBInstanceClass": "db.t2.medium",
+        "DBInstanceIdentifier": "csye6225-fall2017",
+        "PubliclyAccessible": "false",
+        "DBSubnetGroupName": {
+          "Ref": "DBSubnetGroup"
+        },
+        "Engine": "MySQL",
+        "EngineVersion": "5.6.35",
+        "MasterUsername": "csye6225master",
+        "MasterUserPassword": "csye6225password",
+        "DBName": "csye6225",
+        "MultiAZ": "false"
+      },
+      "DeletionPolicy": "Snapshot"
+    },
     "S3Bucket": {
       "Type": "AWS::S3::Bucket",
-      "Description": "Name of S3 bucket to hold website content",
       "Properties": {
-        "AccessControl": "PublicRead",
-        "BucketName": {
-          "Ref": "BucketName"
-        }
+        "BucketName": "placeHolder"
       }
     },
     "MyIamRole": {
@@ -390,20 +368,6 @@
           ]
         }
       }
-    },
-      "DBSubnet": {
-        "Type": "AWS::RDS::DBSubnetGroup",
-        "Properties": {
-          "DBSubnetGroupDescription": "description",
-          "SubnetIds": [
-            {
-              "Ref": "Subnet1"
-            },
-            {
-              "Ref": "Subnet2"
-            }
-          ]
-        }
-      }
     }
   }
+}
