@@ -9,30 +9,43 @@ script:
   - ./gradlew build
   - ./gradlew war
 
-after_success:
+
+after success:
   - mkdir codedeploy
-  - zip -r MyProject.zip build/libs/ROOT.war appspec.yml
+  - zip -r csye6225-fall2017-war.zip build/libs/ROOT.war appspec.yml restartTomcat.sh
+  - ls -al
+  - mv csye6225-fall2017-war.zip codedeploy/
   - ls -al
   - pwd
   - cd codedeploy
   - ls -al
   - pwd
 
-before_deploy:
-  - cd..
+before deploy:
+  - cd ..
 
 deploy:
   - provider: s3
-    access_key_id: AKIAIJ3X7K3O2QBWGR6A
+    access_key_id: AKIAIX2KCXBF4KLND4VA
     secret_access_key:
-      secure: NJWEgMN2bQ05uGiEEOJ6lIjEzSErnoPFLip4D+WhMaTZIfYENIc+QGbGBnHIlp6P/X0LjQovPIQVayB9ZGVdzw4nKMeWExu/AKHFrlS+IBNyK1M+Tglb2O/gH3v/NPQwh9vtSsQS8YK968fL/tfEhMyxTEPeJBSsjjWfNBllwhFA91KTu4g4BV5I7JB5/WTh5DxE6Z5xviuh/F0qQf6bp+Vp+aLFr1pb80vAxOfPLLWJRpSP6o7ATjo+1122kNueI/8J0anO38h5Quz1eWvZQSWoIGE//61W5I+KKu9L7SsAe4H06h/xTKjlaloMjlf5SGt/dJHCfALTKUm5P+8YB0SX824lZSfJ2LirauPGJDKvi0QfrBlnd7hX8+cZzUGomVH0CiWLHj0TJpT8P/tfUqKAMfbNHMx1M2E4pLtefwy5R0bTM/wXvAvWwy4Nh7+Mv3UMag18ukp6f8ib3fegPMWTVLfHVBEvhteiyiWm8t+hetkj4+ac3wM08yCFbbLASsuM2wNpWln+IjtHAicCqNUruekcgRFMifHCjzs0wwKTvigZuWdSajFmlHQPVLjwGs8ATFkteEw+HP9yeWb7W31L9iFoqvqZwL8BTSPDl92k7ltvfQ4m3lKQtchVXFTz36JilXzjBY5ShnHz/Uom9JddQw0dQrDDzGiI4Wclc1I=
+      secure: "SNGssPJRaIbIy0wxS3meTQOk+EFHoR1Vjp3s8xHl/GIdN7ajE4mOpaxh/52G5pzPfUWHRjtPnkw2+7BmJj0SrGwj7nbXbP36xi1GKt+dYNVVrW92eA/m0dYoxO9jtfHpX2ZAuJOND65oEknqyp7HoLNtiz67ETWSTlIpLkGwf7DaOdN2pkiZuGizTHYbwFqcPqlqrEKfJRMqdgCmfAlvN3h04KAs3sy094th9VZZqGZFa3prARH/gUl5QlNk0c3RcEWiHTqWK2j9hjTRTvyQVfZBmVzVqHTeZNp9viSN4S6EbZXiA/KhBqk1IVmwWhKjlx44xJYsC+LukY8qeIJBPgbcrMWoIbPQlnfpkjK5AvEZvHERPEKsPVELUU/2eC880xv/5W0VbB7Aijobcw4cIMYJlLo6Uccz0rU1iRyS/4RLD3rpQ37SHzqUKHfGjDniJA79nBv/reQpR6xc7HmePmkutbO2sjkqGPI/Szg7F/vuRprHY0wLfcyQ6PxJ7dk2Xyhsu2kcMsEg02x0mJ/KCj83EnWpqfHV6n5p1qAc+cJOybgXI+vw1snRuuXt9qRZRzOseTs3QAxpVi5TVVG90om8xOH6Gc+B6gGIy6hVYCE5ACpEcFbhVH8kFU7G2EvpbY2Q+be60bvP+Pnyx74j7bCBLq9OyEXzvx/q5AhpW8Q="
     local_dir: codedeploy
-    bucket: code-deploy.csye6225-fall2017-saxenapr.me
+    bucket: code-deploy.csye6225-fall2017-kunchea.me
     region: us-east-1
     skip_cleanup: true
     on:
-      all branches true
-
+      all-branches: true
+  - provider: codedeploy
+    access_key_id: AKIAIX2KCXBF4KLND4VA
+    bucket: code-deploy.csye6225-fall2017-kunchea.me
+    key: csye6225-fall2017-war.zip
+    bundle_type: zip
+    application: csye6225-fall2017-war
+    deployment_group: csye6225-fall2017-war
+    region: us-east-1
+    secret_access_key:
+      secure: "SNGssPJRaIbIy0wxS3meTQOk+EFHoR1Vjp3s8xHl/GIdN7ajE4mOpaxh/52G5pzPfUWHRjtPnkw2+7BmJj0SrGwj7nbXbP36xi1GKt+dYNVVrW92eA/m0dYoxO9jtfHpX2ZAuJOND65oEknqyp7HoLNtiz67ETWSTlIpLkGwf7DaOdN2pkiZuGizTHYbwFqcPqlqrEKfJRMqdgCmfAlvN3h04KAs3sy094th9VZZqGZFa3prARH/gUl5QlNk0c3RcEWiHTqWK2j9hjTRTvyQVfZBmVzVqHTeZNp9viSN4S6EbZXiA/KhBqk1IVmwWhKjlx44xJYsC+LukY8qeIJBPgbcrMWoIbPQlnfpkjK5AvEZvHERPEKsPVELUU/2eC880xv/5W0VbB7Aijobcw4cIMYJlLo6Uccz0rU1iRyS/4RLD3rpQ37SHzqUKHfGjDniJA79nBv/reQpR6xc7HmePmkutbO2sjkqGPI/Szg7F/vuRprHY0wLfcyQ6PxJ7dk2Xyhsu2kcMsEg02x0mJ/KCj83EnWpqfHV6n5p1qAc+cJOybgXI+vw1snRuuXt9qRZRzOseTs3QAxpVi5TVVG90om8xOH6Gc+B6gGIy6hVYCE5ACpEcFbhVH8kFU7G2EvpbY2Q+be60bvP+Pnyx74j7bCBLq9OyEXzvx/q5AhpW8Q="
+    wait-until-deployed: true
 notifications:
   email:
     recipients:
@@ -41,5 +54,4 @@ notifications:
       - chaudhari.k@husky.neu.edu
       - saxena.pr@husky.neu.edu
 
-services: mysql
-
+  services: mysql
