@@ -1,3 +1,4 @@
+/**
 package com.csye6225.demo.controllers;
 
 import com.csye6225.demo.DemoApplication;
@@ -41,12 +42,13 @@ public class HomeControllerTest {
          Assert.assertEquals("k", u2.getEmail());
 
 
-        /*Task t= new Task();
+        Task t= new Task();
         t.setDescription("Description for kkkkkkkkkkkkkkkkk");
         t.setUser(u);
-        taskRepository.save(t);*/
+        taskRepository.save(t);
 
 
     }
 
 }
+*/

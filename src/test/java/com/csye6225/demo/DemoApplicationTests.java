@@ -1,4 +1,4 @@
-package com.csye6225.demo;
+/**package com.csye6225.demo;
 
 import com.csye6225.demo.repositories.UserRepository;
 import org.junit.Ignore;
@@ -25,3 +25,4 @@ public class DemoApplicationTests {
   }
 
 }
+*/
