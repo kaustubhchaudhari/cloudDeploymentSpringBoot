@@ -1,4 +1,4 @@
-package com.csye6225.demo;
+/**package com.csye6225.demo;
 
 import io.restassured.RestAssured;
 import org.junit.Ignore;
@@ -15,4 +15,4 @@ public class RestAssuredDemoApiTest {
     RestAssured.when().get(new URI("http://localhost:8080/")).then().statusCode(200);
   }
 
-}
+}*/
