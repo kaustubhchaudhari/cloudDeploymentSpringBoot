@@ -22,7 +22,7 @@ after_success:
   - pwd
   
 
-before deploy:
+before_deploy:
   - cd ..
 
 deploy:
