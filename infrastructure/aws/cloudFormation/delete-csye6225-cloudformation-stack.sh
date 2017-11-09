@@ -1,15 +1,10 @@
-#SECURITY_ID=$(aws ec2 describe-security-groups --group-name stack-WebServerSecurityGroup-N1ZSNN8OPT23 | grep GroupId | awk '{print$2}' | tr -cd '[:alnum:]\n-')
+#!/bin/bash
 
-#aws ec2 modify-instance-attribute --instance-id $1 --disable-api-termination "{\"Value\": false}"
+echo "Please Enter a Name for the stack you want to create"
+read stack_name
 
-#INSTANCE_ID=$(aws ec2 describe-instances | grep InstanceId | awk '{print$2}' | tr -cd '[:alnum:]\n-')
+id=$(aws cloudformation list-stack-resources --stack-name ${stack_name} --query 'StackResourceSummaries[?LogicalResourceId==`EC2Instance`].[PhysicalResourceId]' --output text)
 
-#aws ec2 modify-instance-attribute --instance-id $INSTANCE_ID --disable-api-termination "{\"Value\": false}"
-
-#aws ec2 terminate-instances --instance-ids $INSTANCE_ID
-
-#aws ec2 wait instance-terminated --instance-ids $INSTANCE_ID
-
-#aws ec2 delete-security-group --group-id $SECURITY_ID
-
-aws cloudformation delete-stack --stack-name $1
+aws ec2 modify-instance-attribute --instance-id ${id} --disable-api-termination "{\"Value\":false}"
+aws cloudformation delete-stack --stack-name ${stack_name}
+aws cloudformation wait stack-delete-complete --stack-name ${stack_name}
