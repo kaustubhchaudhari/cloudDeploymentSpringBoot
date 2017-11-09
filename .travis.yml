@@ -28,13 +28,11 @@ deploy:
   - provider: s3
     access_key_id: AKIAIAUVK7GBA3D3HSCA
     secret_access_key:
-    secure: "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"
+      secure: 6gLP/hAp2C0E2HRQXFlT90iniYT8Lv53JiE/H0mB
     local_dir: codedeploy
     bucket: csye6225-fall2017-nakhawaa.me.bucket
     region: us-east-1
     skip_cleanup: true
-    on:
-      all-branches: true
   - provider: codedeploy
     access_key_id: AKIAIAUVK7GBA3D3HSCA
     bucket: csye6225-fall2017-nakhawaa.me.bucket
@@ -44,8 +42,9 @@ deploy:
     deployment_group: csye6225-fall2017-war
     region: us-east-1
     secret_access_key:
-    secure: "6gLP/hAp2C0E2HRQXFlT90iniYT8Lv53JiE/H0mB"
+      secure: 6gLP/hAp2C0E2HRQXFlT90iniYT8Lv53JiE/H0mB
     wait-until-deployed: true
+    
 notifications:
   email:
     recipients:
