@@ -12,14 +12,7 @@ script:
 
 after success:
   - sudo mkdir codedeploy
-  - sudo zip -r csye6225-fall2017-war.zip build/libs/ROOT.war appspec.yml restartTomcat.sh
-  - sudo ls -al
-  - sudo mv csye6225-fall2017-war.zip codedeploy/
-  - sudo ls -al
-  - sudo pwd
-  - sudo cd codedeploy
-  - sudo ls -al
-  - sudo pwd
+  
 
 before deploy:
   - cd ..
