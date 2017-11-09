@@ -81,7 +81,7 @@
         },
         "Tags": [
           {
-            "Key": "NAME",
+            "Key": "Key",
             "Value": "csye6225"
           }
         ]

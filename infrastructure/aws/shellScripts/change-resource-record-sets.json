@@ -4,7 +4,7 @@
     {
       "Action": "UPSERT",
       "ResourceRecordSet": {
-        "Name": "csye6225-fall2017-kunchea.me",
+        "Name": "ec2.csye6225-fall2017-kunchea.me",
         "Type": "A",
         "TTL": 60,
         "ResourceRecords": [
