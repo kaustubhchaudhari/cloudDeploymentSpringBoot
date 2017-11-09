@@ -10,8 +10,8 @@ script:
   - ./gradlew war
 
 
-after success:
-  - mkdir codedeploy
+after_success:
+  - mkdir -p codedeploy
   - zip -r csye6225-fall2017-war.zip build/libs/ROOT.war appspec.yml restartTomcat.sh
   - ls -al
   - mv csye6225-fall2017-war.zip codedeploy/
@@ -20,32 +20,32 @@ after success:
   - cd codedeploy
   - ls -al
   - pwd
+  
 
-before deploy:
+before_deploy:
   - cd ..
 
 deploy:
   - provider: s3
-    access_key_id: AKIAIX2KCXBF4KLND4VA
+    access_key_id: AKIAIAUVK7GBA3D3HSCA
     secret_access_key:
-      secure: "SNGssPJRaIbIy0wxS3meTQOk+EFHoR1Vjp3s8xHl/GIdN7ajE4mOpaxh/52G5pzPfUWHRjtPnkw2+7BmJj0SrGwj7nbXbP36xi1GKt+dYNVVrW92eA/m0dYoxO9jtfHpX2ZAuJOND65oEknqyp7HoLNtiz67ETWSTlIpLkGwf7DaOdN2pkiZuGizTHYbwFqcPqlqrEKfJRMqdgCmfAlvN3h04KAs3sy094th9VZZqGZFa3prARH/gUl5QlNk0c3RcEWiHTqWK2j9hjTRTvyQVfZBmVzVqHTeZNp9viSN4S6EbZXiA/KhBqk1IVmwWhKjlx44xJYsC+LukY8qeIJBPgbcrMWoIbPQlnfpkjK5AvEZvHERPEKsPVELUU/2eC880xv/5W0VbB7Aijobcw4cIMYJlLo6Uccz0rU1iRyS/4RLD3rpQ37SHzqUKHfGjDniJA79nBv/reQpR6xc7HmePmkutbO2sjkqGPI/Szg7F/vuRprHY0wLfcyQ6PxJ7dk2Xyhsu2kcMsEg02x0mJ/KCj83EnWpqfHV6n5p1qAc+cJOybgXI+vw1snRuuXt9qRZRzOseTs3QAxpVi5TVVG90om8xOH6Gc+B6gGIy6hVYCE5ACpEcFbhVH8kFU7G2EvpbY2Q+be60bvP+Pnyx74j7bCBLq9OyEXzvx/q5AhpW8Q="
+      secure: 6gLP/hAp2C0E2HRQXFlT90iniYT8Lv53JiE/H0mB
     local_dir: codedeploy
-    bucket: code-deploy.csye6225-fall2017-kunchea.me
+    bucket: csye6225-fall2017-nakhawaa.me.bucket
     region: us-east-1
     skip_cleanup: true
-    on:
-      all-branches: true
   - provider: codedeploy
-    access_key_id: AKIAIX2KCXBF4KLND4VA
-    bucket: code-deploy.csye6225-fall2017-kunchea.me
+    access_key_id: AKIAIAUVK7GBA3D3HSCA
+    bucket: csye6225-fall2017-nakhawaa.me.bucket
     key: csye6225-fall2017-war.zip
     bundle_type: zip
     application: csye6225-fall2017-war
     deployment_group: csye6225-fall2017-war
     region: us-east-1
     secret_access_key:
-      secure: "SNGssPJRaIbIy0wxS3meTQOk+EFHoR1Vjp3s8xHl/GIdN7ajE4mOpaxh/52G5pzPfUWHRjtPnkw2+7BmJj0SrGwj7nbXbP36xi1GKt+dYNVVrW92eA/m0dYoxO9jtfHpX2ZAuJOND65oEknqyp7HoLNtiz67ETWSTlIpLkGwf7DaOdN2pkiZuGizTHYbwFqcPqlqrEKfJRMqdgCmfAlvN3h04KAs3sy094th9VZZqGZFa3prARH/gUl5QlNk0c3RcEWiHTqWK2j9hjTRTvyQVfZBmVzVqHTeZNp9viSN4S6EbZXiA/KhBqk1IVmwWhKjlx44xJYsC+LukY8qeIJBPgbcrMWoIbPQlnfpkjK5AvEZvHERPEKsPVELUU/2eC880xv/5W0VbB7Aijobcw4cIMYJlLo6Uccz0rU1iRyS/4RLD3rpQ37SHzqUKHfGjDniJA79nBv/reQpR6xc7HmePmkutbO2sjkqGPI/Szg7F/vuRprHY0wLfcyQ6PxJ7dk2Xyhsu2kcMsEg02x0mJ/KCj83EnWpqfHV6n5p1qAc+cJOybgXI+vw1snRuuXt9qRZRzOseTs3QAxpVi5TVVG90om8xOH6Gc+B6gGIy6hVYCE5ACpEcFbhVH8kFU7G2EvpbY2Q+be60bvP+Pnyx74j7bCBLq9OyEXzvx/q5AhpW8Q="
+      secure: 6gLP/hAp2C0E2HRQXFlT90iniYT8Lv53JiE/H0mB
     wait-until-deployed: true
+    
 notifications:
   email:
     recipients:
