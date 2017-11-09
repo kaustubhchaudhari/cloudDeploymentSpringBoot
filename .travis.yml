@@ -27,23 +27,24 @@ before_deploy:
 
 deploy:
   - provider: s3
-    access_key_id: AKIAIAUVK7GBA3D3HSCA
+    access_key_id: AKIAIJ3X7K3O2QBWGR6A
     secret_access_key:
-      secure: 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
-    local_dir: codedeploy
-    bucket: csye6225-fall2017-nakhawaa.me.bucket
+          secure: NJWEgMN2bQ05uGiEEOJ6lIjEzSErnoPFLip4D+WhMaTZIfYENIc+QGbGBnHIlp6P/X0LjQovPIQVayB9ZGVdzw4nKMeWExu/AKHFrlS+IBNyK1M+Tglb2O/gH3v/NPQwh9vtSsQS8YK968fL/tfEhMyxTEPeJBSsjjWfNBllwhFA91KTu4g4BV5I7JB5/WTh5DxE6Z5xviuh/F0qQf6bp+Vp+aLFr1pb80vAxOfPLLWJRpSP6o7ATjo+1122kNueI/8J0anO38h5Quz1eWvZQSWoIGE//61W5I+KKu9L7SsAe4H06h/xTKjlaloMjlf5SGt/dJHCfALTKUm5P+8YB0SX824lZSfJ2LirauPGJDKvi0QfrBlnd7hX8+cZzUGomVH0CiWLHj0TJpT8P/tfUqKAMfbNHMx1M2E4pLtefwy5R0bTM/wXvAvWwy4Nh7+Mv3UMag18ukp6f8ib3fegPMWTVLfHVBEvhteiyiWm8t+hetkj4+ac3wM08yCFbbLASsuM2wNpWln+IjtHAicCqNUruekcgRFMifHCjzs0wwKTvigZuWdSajFmlHQPVLjwGs8ATFkteEw+HP9yeWb7W31L9iFoqvqZwL8BTSPDl92k7ltvfQ4m3lKQtchVXFTz36JilXzjBY5ShnHz/Uom9JddQw0dQrDDzGiI4Wclc1I=
+        local_dir: codedeploy
+    bucket: code-deploy.csye6225-fall2017-saxenapr.me
     region: us-east-1
     skip_cleanup: true
   - provider: codedeploy
-    access_key_id: AKIAIAUVK7GBA3D3HSCA
-    bucket: csye6225-fall2017-nakhawaa.me.bucket
+    access_key_id: AKIAIJ3X7K3O2QBWGR6A
+    bucket: code-deploy.csye6225-fall2017-saxenapr.me
     key: csye6225-fall2017-war.zip
     bundle_type: zip
-    application: csye6225-fall2017-war
-    deployment_group: csye6225-fall2017-war
+    application: csye6225
+    deployment_group: csye6225
     region: us-east-1
     secret_access_key:
-      secure: 6gLP/hAp2C0E2HRQXFlT90iniYT8Lv53JiE/H0mB
+              secure: NJWEgMN2bQ05uGiEEOJ6lIjEzSErnoPFLip4D+WhMaTZIfYENIc+QGbGBnHIlp6P/X0LjQovPIQVayB9ZGVdzw4nKMeWExu/AKHFrlS+IBNyK1M+Tglb2O/gH3v/NPQwh9vtSsQS8YK968fL/tfEhMyxTEPeJBSsjjWfNBllwhFA91KTu4g4BV5I7JB5/WTh5DxE6Z5xviuh/F0qQf6bp+Vp+aLFr1pb80vAxOfPLLWJRpSP6o7ATjo+1122kNueI/8J0anO38h5Quz1eWvZQSWoIGE//61W5I+KKu9L7SsAe4H06h/xTKjlaloMjlf5SGt/dJHCfALTKUm5P+8YB0SX824lZSfJ2LirauPGJDKvi0QfrBlnd7hX8+cZzUGomVH0CiWLHj0TJpT8P/tfUqKAMfbNHMx1M2E4pLtefwy5R0bTM/wXvAvWwy4Nh7+Mv3UMag18ukp6f8ib3fegPMWTVLfHVBEvhteiyiWm8t+hetkj4+ac3wM08yCFbbLASsuM2wNpWln+IjtHAicCqNUruekcgRFMifHCjzs0wwKTvigZuWdSajFmlHQPVLjwGs8ATFkteEw+HP9yeWb7W31L9iFoqvqZwL8BTSPDl92k7ltvfQ4m3lKQtchVXFTz36JilXzjBY5ShnHz/Uom9JddQw0dQrDDzGiI4Wclc1I=
+
     wait-until-deployed: true
     
 notifications:

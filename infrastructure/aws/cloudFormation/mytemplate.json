@@ -28,7 +28,7 @@
             }
           }
         ],
-        "KeyName": "id_rsa1",
+        "KeyName": "id_rsa",
         "UserData": {
           "Fn::Base64": {
             "Fn::Join": [
@@ -82,7 +82,7 @@
         "Tags": [
           {
             "Key": "NAME",
-            "Value": "CSYE6225"
+            "Value": "csye6225"
           }
         ]
       }
