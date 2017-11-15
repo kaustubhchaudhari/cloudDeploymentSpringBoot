@@ -27,23 +27,21 @@ before_deploy:
 
 deploy:
   - provider: s3
-    access_key_id: AKIAIAUVK7GBA3D3HSCA
-    secret_access_key:
-      secure: 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
+    access_key_id: AKIAJ75553KXEXZZYPRQ
+    secret_access_key: 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
     local_dir: codedeploy
-    bucket: csye6225-fall2017-nakhawaa.me.bucket
+    bucket: csye6225-fall2017-kunchea.me.bucket
     region: us-east-1
     skip_cleanup: true
   - provider: codedeploy
-    access_key_id: AKIAIAUVK7GBA3D3HSCA
-    bucket: csye6225-fall2017-nakhawaa.me.bucket
+    access_key_id: AKIAJ75553KXEXZZYPRQ
+    bucket: csye6225-fall2017-kunchea.me.bucket
     key: csye6225-fall2017-war.zip
     bundle_type: zip
-    application: csye6225-fall2017-war
-    deployment_group: csye6225-fall2017-war
+    application: csye6225
+    deployment_group: csye6225
     region: us-east-1
-    secret_access_key:
-      secure: 6gLP/hAp2C0E2HRQXFlT90iniYT8Lv53JiE/H0mB
+    secret_access_key: fPMDdR0lxm7xVC69L/G97Onm7OXuT2MCfikz4oEL
     wait-until-deployed: true
     
 notifications:
