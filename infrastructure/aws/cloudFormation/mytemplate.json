@@ -81,7 +81,6 @@
         },
         "Tags": [
           {
-
             "Key": "Key",
             "Value": "csye6225"
           }
@@ -220,7 +219,7 @@
       "Properties": {
         "VpcId": "placeHolder",
         "AvailabilityZone": "us-east-1a",
-        "CidrBlock": "172.31.96.0/20"
+        "CidrBlock": "172.31.32.0/20"
       }
     },
     "subnet2": {
@@ -228,7 +227,7 @@
       "Properties": {
         "VpcId": "placeHolder",
         "AvailabilityZone": "us-east-1b",
-        "CidrBlock": "172.31.112.0/20"
+        "CidrBlock": "172.31.0.0/20"
       }
     },
     "DBSubnetGroup": {
@@ -361,7 +360,7 @@
       ],
       "Properties": {
         "Code": {
-          "S3Bucket": "code-deploy.csye6225-fall2017-nakhawaa.me",
+          "S3Bucket": "code-deploy.csye6225-fall2017-kunchea.me",
           "S3Key": "csye6225-aws-lambda-0.0.1.zip"
         },
         "Role": {
