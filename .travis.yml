@@ -34,8 +34,7 @@ deploy:
     bucket: code-deploy.csye6225-fall2017-saxenapr.me
     region: us-east-1
     skip_cleanup: true
-    on:
-     all-branches: true
+    
   - provider: codedeploy
     access_key_id: AKIAIJ3X7K3O2QBWGR6A
     bucket: code-deploy.csye6225-fall2017-saxenapr.me
