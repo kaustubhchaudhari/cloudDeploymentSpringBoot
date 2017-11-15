@@ -228,7 +228,6 @@
         "VpcId": "placeHolder",
         "AvailabilityZone": "us-east-1b",
         "CidrBlock": "172.31.0.0/20"
-"
       }
     },
     "DBSubnetGroup": {
