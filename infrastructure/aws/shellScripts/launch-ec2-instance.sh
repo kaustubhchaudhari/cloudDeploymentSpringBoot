@@ -10,7 +10,7 @@ aws ec2 wait instance-running --instance-ids $instance_id
 export instance_ip=$(eval aws ec2 describe-instances --instance-ids $instance_id --query 'Reservations[0].Instances[0].PublicIpAddress')
 instance_ip=$(eval echo $instance_ip)
 zone_id=Z2NPS0RUXOU9FU
-export INPUT_JSON_STR='{"ChangeBatch":{"Comment": "Update the A record set", "Changes":[{"Action":"UPSERT","ResourceRecordSet":{"Name":"ec2.csye6225-fall2017-kunchea.me.","Type": "A","TTL": 60,"ResourceRecords":[{"Value": "127.0.0.1"}]}}]}}'
+export INPUT_JSON_STR='{"ChangeBatch":{"Comment": "Update the A record set", "Changes":[{"Action":"UPSERT","ResourceRecordSet":{"Name":"ec2.csye6225-fall2017-saxenapr.me.","Type": "A","TTL": 60,"ResourceRecords":[{"Value": "127.0.0.1"}]}}]}}'
 echo $INPUT_JSON_STR
 INPUT_JSON=${INPUT_JSON_STR/127.0.0.1/$instance_ip}
 echo $INPUT_JSON
