@@ -81,6 +81,7 @@
         },
         "Tags": [
           {
+
             "Key": "Key",
             "Value": "csye6225"
           }
@@ -188,6 +189,32 @@
         "TableName": "ToDoTask"
       }
     },
+    "DynamoTokenTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "KeySchema": [
+          {
+            "AttributeName": "username",
+            "KeyType": "HASH"
+          }
+        ],
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "username",
+            "AttributeType": "S"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": "5",
+          "WriteCapacityUnits": "5"
+        },
+        "TableName": "tokenHolder",
+        "TimeToLiveSpecification": {
+          "AttributeName": "ttl",
+          "Enabled": true
+        }
+      }
+    },
     "subnet1": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
@@ -253,7 +280,8 @@
       "Properties": {
         "ManagedPolicyArns": [
           "arn:aws:iam::aws:policy/AmazonRDSFullAccess",
-          "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+          "arn:aws:iam::aws:policy/AmazonS3FullAccess",
+          "arn:aws:iam::aws:policy/AmazonSNSFullAccess"
         ],
         "AssumeRolePolicyDocument": {
           "Version": "2012-10-17",
@@ -273,6 +301,48 @@
         }
       }
     },
+    "MyLambdaRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+          "arn:aws:iam::aws:policy/AmazonSESFullAccess",
+          "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
+        ],
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "lambdaPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "MyLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Principal": "sns.amazonaws.com",
+        "SourceArn": {
+          "Ref": "MySNSTopic"
+        }
+      }
+    },
     "MyIamProfile": {
       "Type": "AWS::IAM::InstanceProfile",
       "Properties": {
@@ -282,6 +352,45 @@
           }
         ],
         "InstanceProfileName": "csye-test-iam-profile"
+      }
+    },
+    "MyLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "DependsOn": [
+        "MyLambdaRole"
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": "code-deploy.csye6225-fall2017-nakhawaa.me",
+          "S3Key": "csye6225-aws-lambda-0.0.1.zip"
+        },
+        "Role": {
+          "Fn::GetAtt": [
+            "MyLambdaRole",
+            "Arn"
+          ]
+        },
+        "Timeout": 60,
+        "Handler": "LogEvent::handleRequest",
+        "MemorySize": 256,
+        "Runtime": "java8"
+      }
+    },
+    "MySNSTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "Subscription": [
+          {
+            "Endpoint": {
+              "Fn::GetAtt": [
+                "MyLambdaFunction",
+                "Arn"
+              ]
+            },
+            "Protocol": "lambda"
+          }
+        ],
+        "TopicName": "SESTopic"
       }
     },
     "S3AccessPolicy": {

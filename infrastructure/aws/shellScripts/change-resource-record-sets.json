@@ -4,11 +4,13 @@
     {
       "Action": "UPSERT",
       "ResourceRecordSet": {
+
         "Name": "ec2.csye6225-fall2017-kunchea.me",
         "Type": "A",
         "TTL": 60,
         "ResourceRecords": [
           {
+
             "Value": "54.172.8.216"
           }
         ]
