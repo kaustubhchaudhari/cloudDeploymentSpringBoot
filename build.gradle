@@ -64,7 +64,7 @@ dependencies {
     runtime('org.springframework.boot:spring-boot-devtools')
     runtime('mysql:mysql-connector-java')
     compile ('com.amazonaws:aws-java-sdk:1.11.221')
-    compile ('com.amazonaws:aws-java-sdk-s3:1.11.221')ta
+    compile ('com.amazonaws:aws-java-sdk-s3:1.11.221')
     providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
 
     testCompile('io.rest-assured:rest-assured:3.0.3')
