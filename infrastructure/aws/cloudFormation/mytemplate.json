@@ -219,7 +219,7 @@
       "Properties": {
         "VpcId": "placeHolder",
         "AvailabilityZone": "us-east-1a",
-        "CidrBlock": "172.31.0.0/16"
+        "CidrBlock": "172.31.96.0/20"
       }
     },
     "subnet2": {
@@ -227,7 +227,7 @@
       "Properties": {
         "VpcId": "placeHolder",
         "AvailabilityZone": "us-east-1b",
-        "CidrBlock": "172.31.0.0/16"
+        "CidrBlock": "172.31.112.0/20"
       }
     },
     "DBSubnetGroup": {
