@@ -218,43 +218,11 @@
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "VpcId": "placeHolder",
-        "AvailabilityZone": "us-east-1d",
-        "CidrBlock": "172.31.16.0/20"
-      }
-    },
-    "subnet2": {
-      "Type": "AWS::EC2::Subnet",
-      "Properties": {
-        "VpcId": "placeHolder",
-        "AvailabilityZone": "us-east-1b",
-        "CidrBlock": "172.31.0.0/20"
-      }
-    },
-"subnet3": {
-      "Type": "AWS::EC2::Subnet",
-      "Properties": {
-        "VpcId": "placeHolder",
-        "AvailabilityZone": "us-east-1c",
-        "CidrBlock": "172.31.80.0/20"
-      }
-    },
-"subnet4": {
-      "Type": "AWS::EC2::Subnet",
-      "Properties": {
-        "VpcId": "placeHolder",
         "AvailabilityZone": "us-east-1a",
         "CidrBlock": "172.31.32.0/20"
       }
     },
-"subnet5": {
-      "Type": "AWS::EC2::Subnet",
-      "Properties": {
-        "VpcId": "placeHolder",
-        "AvailabilityZone": "us-east-1e",
-        "CidrBlock": "172.31.48.0/20"
-      }
-    },
-"subnet6": {
+    "subnet2": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
         "VpcId": "placeHolder",
@@ -272,18 +240,6 @@
           },
           {
             "Ref": "subnet2"
-          },
-{
-            "Ref": "subnet3"
-          },
-{
-            "Ref": "subnet4"
-          },
-{
-            "Ref": "subnet5"
-          },
-{
-            "Ref": "subnet6"
           }
         ]
       }
