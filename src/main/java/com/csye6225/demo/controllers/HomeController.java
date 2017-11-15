@@ -19,6 +19,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.Date;
+import ch.qos.logback.core.net.SyslogOutputStream;
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.auth.ClasspathPropertiesFileCredentialsProvider;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.sns.AmazonSNS;
+import com.amazonaws.services.sns.AmazonSNSClient;
+import com.amazonaws.services.sns.AmazonSNSClientBuilder;
+import com.amazonaws.services.sns.model.CreateTopicRequest;
+import com.amazonaws.services.sns.model.CreateTopicResult;
+import com.amazonaws.services.sns.model.PublishRequest;
+import com.amazonaws.services.sns.model.PublishResult;
 
 import com.csye6225.demo.model.User;
 
@@ -85,6 +98,25 @@ public class HomeController {
     return jsonObject.toString();
   }
 
+  @RequestMapping(value = "/forgot-password", method = RequestMethod.POST, produces = "application/json")
+  @ResponseBody
+  public String passwordReset(@RequestParam(value = "username") String username){
+    JsonObject object = new JsonObject();
+    User user = userRepository.findByEmail(username);
+    object.addProperty("message: ","A mail with a reset link has been sent to: "+ username);
 
+    if(user == null){
+      return object.toString();
+    }
+
+    AmazonSNS sns = AmazonSNSClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
+    CreateTopicResult topicResult = sns.createTopic("SESTopic");
+
+    String arn = topicResult.getTopicArn();//obj.get("TopicArn").getAsString();
+    PublishRequest publishRequest = new PublishRequest(arn,""+username+","+user.getId());
+    PublishResult publishResult = sns.publish(publishRequest);
+
+    return object.toString();
+  }
 
 }
