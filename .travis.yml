@@ -11,13 +11,13 @@ script:
 
 
 after_success:
-	  - mkdir codedeploy
+	  - mkdir -p codedeploy
 	  - zip -r csye6225-fall2017-war.zip build/libs/ROOT.war appspec.yml restartTomcat.sh infrastructure/aws/cloudwatch/awslogs.conf
 	  - ls -al
-	  - mv csye6225-fall2017-war.zip ubuntu/
+	  - mv csye6225-fall2017-war.zip codedeploy/
 	  - ls -al
 	  - pwd
-	  - cd ubuntu
+	  - cd codedeploy
 	  - ls -al
 	  - pwd
 
