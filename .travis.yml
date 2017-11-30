@@ -10,6 +10,7 @@ script:
   - ./gradlew war
 
 
+
 after_success:
 	  - mkdir -p codedeploy
 	  - zip -r csye6225-fall2017-war.zip build/libs/ROOT.war appspec.yml restartTomcat.sh infrastructure/aws/cloudwatch/awslogs.conf
