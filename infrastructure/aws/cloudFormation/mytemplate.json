@@ -64,7 +64,7 @@
           {
             "Fn::GetAtt": [
               "WebServerSecurityGroup",
-		"GroupId"
+              "GroupId"
             ]
           }
         ],
@@ -203,7 +203,7 @@
             "SourceSecurityGroupId": {
               "Fn::GetAtt": [
                 "WebServerSecurityGroup",
-		"GroupId"
+                "GroupId"
               ]
             }
           }
@@ -500,22 +500,21 @@
             "Ref": "MyIamRole"
           }
         ],
-        "PolicyName": "csye-test-policy",
+        "PolicyName": "csye-test-policy1",
         "PolicyDocument": {
           "Version": "2012-10-17",
           "Statement": [
             {
-              "Action": [
-                "s3:Get*",
-                "s3:List*"
-              ],
               "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "MyIamProfile",
-                  "Arn"
-                ]
-              }
+              "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+                "logs:DescribeLogStreams"
+              ],
+              "Resource": [
+                "arn:aws:logs:*:*:*"
+              ]
             }
           ]
         }
