@@ -142,8 +142,8 @@
         },
         "Tags": [
           {
-            "Key": "Key",
-            "Value": "csye6225"
+            "Key": "NAME",
+            "Value": "CSYE6225"
           }
         ]
       }
@@ -427,7 +427,7 @@
       ],
       "Properties": {
         "Code": {
-          "S3Bucket": "code-deploy.csye6225-fall2017-neelkamalh.me",
+          "S3Bucket": "code-deploy.csye6225-fall2017-saxenapr.me",
           "S3Key": "csye6225-aws-lambda-0.0.1.zip"
         },
         "Role": {
