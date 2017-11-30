@@ -1,23 +1,22 @@
 version: 0.0
-os: linux
+	os: linux
+	
 
-files:
-  - source: ./appspec.yml
-    destination: /home/ubuntu
-  - source: ./restartTomcat.sh
-    destination: /home/ubuntu
-  - source: ./build/libs/ROOT.war
-    destination: /var/lib/tomcat8/webapps
-  - source: ./restartAwsLogs.sh
-    destination: /home/ubuntu
-  - source: ./build/libs/ROOT.war
-    destination: /var/awslogs/etc/awslogs.conf
+	files:
+	  - source: ./appspec.yml
+	    destination: /home/ubuntu
+	  - source: ./restartTomcat.sh
+	    destination: /home/ubuntu
+	  - source: ./build/libs/ROOT.war
+	    destination: /var/lib/tomcat8/webapps
+	  - source: ./infrastructure/aws/cloudwatch/awslogs.conf
+	    destination: /var/awslogs/etc
+	
 
-hooks:
-  AfterInstall:
-   - location: ./restartTomcat.sh
-     timeout: 180
-     runas: ubuntu
-   - location: ./restartAwsLogs.sh
-     timeout: 180
-     runas: ubuntu
+	hook:
+
+	  AfterInstall:
+	  - location: ./restartTomcat.sh
+	    timeout: 180
+	    runas: ubuntu
+
