@@ -27,7 +27,7 @@ before_deploy:
 
 deploy:
   - provider: s3
-    access_key_id: AKIAIVZAO6ETGMQHSMGQ
+    access_key_id: accessKey
     secret_access_key:
       secure: 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
     local_dir: codedeploy
@@ -36,7 +36,7 @@ deploy:
     skip_cleanup: true
 
   - provider: codedeploy
-    access_key_id: AKIAIVZAO6ETGMQHSMGQ
+    access_key_id: accessKey
     bucket: csye-6225-fall2017-chaudharik.me.bucket
     key: csye6225-fall2017-war.zip
     bundle_type: zip
